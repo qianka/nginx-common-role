@@ -1,0 +1,20 @@
+---
+- name: install nginx packages
+  apt: pkg={{ item }}
+       update_cache=yes
+  with_items:
+    - nginx
+
+- name: configure nginx
+  template: src=nginx.conf
+            dest="/etc/nginx/nginx.conf"
+            owner=root group=root mode=0644
+  notify: restart nginx
+
+- name: start nginx
+  service: name=nginx state=started enabled=true
+
+- name: configure logrotate nginx
+  file: src=logrotate-nginx.conf
+        dest="/etc/logrotate.d/nginx"
+        owner=root group=root mode=0644
